@@ -61,7 +61,8 @@ export function usePicker<T>(options: UsePickerOptions<T>) {
 
   // A native reset restores the default, as it does for an <input>. The listener sits on the
   // document so it runs after the form's own handlers (React's included) and can skip a
-  // cancelled reset.
+  // cancelled reset. The form is read once at mount: a trigger moved to another form later
+  // (a changed `form` attribute) keeps listening to the first one.
   const onReset = useRef<() => void>(() => undefined);
   useLayoutEffect(() => {
     onReset.current = () => {

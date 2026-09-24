@@ -12,8 +12,10 @@ export const DatePicker = forwardRef<HTMLButtonElement, DatePickerProps>(
     const triggerRef = useRef<HTMLButtonElement>(null);
     const tabStopRef = useRef<HTMLButtonElement>(null);
     const idBase = useId();
-    // The trigger never unmounts while the picker is mounted.
-    useImperativeHandle(ref, () => triggerRef.current as HTMLButtonElement);
+    // PickerField always renders the trigger, and refs attach before layout effects run, so
+    // the button exists by the time the handle is created. It never unmounts while the picker
+    // is mounted, so the handle never needs to be recreated.
+    useImperativeHandle(ref, () => triggerRef.current as HTMLButtonElement, []);
 
     const picker = usePicker<Date | null>({
       ...props,
