@@ -93,6 +93,11 @@ describe('getLocaleInfo — real Intl data', () => {
     );
   });
 
+  it('formats a short date without the year', () => {
+    expect(norm(getLocaleInfo('en-US').formatShortDate(new Date(2026, 8, 3)))).toBe('Sep 3');
+    expect(norm(getLocaleInfo('en-GB').formatShortDate(new Date(2026, 8, 3)))).toBe('3 Sept');
+  });
+
   it('formats day numbers with the locale digits', () => {
     expect(getLocaleInfo('ar-EG').formatDayNumber(new Date(2026, 8, 24))).toBe('٢٤');
     expect(getLocaleInfo('en-US').formatDayNumber(new Date(2026, 8, 4))).toBe('4');

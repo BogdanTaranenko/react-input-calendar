@@ -21,6 +21,8 @@ export interface LocaleInfo {
   formatMonthYear: (date: Date) => string;
   /** Trigger text, e.g. "Sep 24, 2026". */
   formatDate: (date: Date) => string;
+  /** Month and day without the year, e.g. "Sep 3"; joined by `formatList` for several dates. */
+  formatShortDate: (date: Date) => string;
   /** Range trigger text with the shared parts collapsed, e.g. "Sep 3 – 9, 2026". */
   formatDateRange: (from: Date, to: Date) => string;
   formatDateTime: (date: Date, hourCycle: HourCycle) => string;
@@ -121,6 +123,7 @@ function buildLocaleInfo(requested: string): LocaleInfo {
     }),
     formatMonthYear: formatter(locale, { month: 'long', year: 'numeric' }),
     formatDate: formatter(locale, { dateStyle: 'medium' }),
+    formatShortDate: formatter(locale, { month: 'short', day: 'numeric' }),
     formatDateRange: (from, to) => dateRange.formatRange(from, to),
     formatDateTime: (date, hourCycle) => dateTime[hourCycle](date),
     formatDayNumber: formatter(locale, { day: 'numeric' }),

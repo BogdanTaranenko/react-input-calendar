@@ -26,7 +26,12 @@ export interface UsePickerOptions<T> {
   /** Whether a non-empty value satisfies `required`. Default: any non-empty value does. */
   isComplete?: ((value: T) => boolean) | undefined;
   /** Trigger text for a non-empty value. */
-  format: (value: NonNullable<T>, localeInfo: LocaleInfo, locale: string) => string;
+  format: (
+    value: NonNullable<T>,
+    localeInfo: LocaleInfo,
+    locale: string,
+    labels: CalendarLabels,
+  ) => string;
   disabled?: boolean | undefined;
   readOnly?: boolean | undefined;
   locale?: string | undefined;
@@ -100,7 +105,7 @@ export function usePicker<T>(options: UsePickerOptions<T>) {
     labels,
     fieldProps: {
       // isEmpty is the runtime check that rules out null here.
-      text: hasValue ? options.format(value as NonNullable<T>, localeInfo, locale) : '',
+      text: hasValue ? options.format(value as NonNullable<T>, localeInfo, locale, labels) : '',
       hasValue,
       complete: hasValue && (options.isComplete?.(value) ?? true),
       open,

@@ -103,3 +103,18 @@ export interface DateRangePickerProps extends SharedPickerProps<DateRange>, Rang
    */
   presets?: RangePreset[] | undefined;
 }
+
+/**
+ * The trigger lists up to three days as month and day, without the year even when they span
+ * several (the calendar shows full dates), and a count beyond that. `formatValue` replaces it.
+ */
+export interface MultiDatePickerProps extends SharedPickerProps<Date[]> {
+  value?: Date[] | undefined;
+  defaultValue?: Date[] | undefined;
+  /** Called on every toggle with the picked days at local midnight, sorted ascending. */
+  onChange?: ((value: Date[]) => void) | undefined;
+  /** Submits one `YYYY-MM-DD` field per day in a native form. */
+  name?: string | undefined;
+  /** Once this many days are picked, others cannot be added until one is removed. */
+  maxSelected?: number | undefined;
+}
