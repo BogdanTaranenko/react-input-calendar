@@ -1,0 +1,31 @@
+{
+  "name": "react-input-calendar-monorepo",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.27.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "pnpm --filter @b.taranenko/react-input-calendar build",
+    "test": "pnpm --filter @b.taranenko/react-input-calendar test",
+    "test:coverage": "pnpm --filter @b.taranenko/react-input-calendar test:coverage",
+    "test:tz": "TZ=America/New_York pnpm test && TZ=Australia/Sydney pnpm test",
+    "typecheck": "pnpm --filter @b.taranenko/react-input-calendar typecheck",
+    "lint": "pnpm --filter @b.taranenko/react-input-calendar lint",
+    "size": "pnpm --filter @b.taranenko/react-input-calendar size",
+    "check:exports": "pnpm --filter @b.taranenko/react-input-calendar check:exports",
+    "e2e": "pnpm --filter e2e exec playwright test",
+    "docs:dev": "pnpm --filter docs dev",
+    "docs:build": "pnpm --filter docs build"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^3.0.3",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.9.9",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.70.1"
+  }
+}

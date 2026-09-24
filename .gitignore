@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+.tmp/
+playwright-report
+test-results
+examples/*/node_modules
+examples/*/.next
+examples/*/dist
+examples/*/package-lock.json
+packages/react-input-calendar/README.md
+packages/react-input-calendar/LICENSE
+.DS_Store
+.idea/

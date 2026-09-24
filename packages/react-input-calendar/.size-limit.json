@@ -1,0 +1,5 @@
+[
+  { "name": "all", "path": "dist/index.mjs", "import": "*", "gzip": true },
+  { "name": "DatePicker", "path": "dist/index.mjs", "import": "{ VERSION }", "gzip": true },
+  { "name": "css", "path": "dist/styles.css", "rolldown": false, "gzip": true }
+]
