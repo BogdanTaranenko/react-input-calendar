@@ -80,6 +80,19 @@ describe('getLocaleInfo — real Intl data', () => {
     expect(info.formatYear(date)).toBe('2026');
   });
 
+  it('formats a date range with the shared parts collapsed', () => {
+    const info = getLocaleInfo('en-US');
+    expect(norm(info.formatDateRange(new Date(2026, 8, 3), new Date(2026, 8, 9)))).toBe(
+      'Sep 3 – 9, 2026',
+    );
+    expect(norm(info.formatDateRange(new Date(2026, 11, 30), new Date(2027, 0, 2)))).toBe(
+      'Dec 30, 2026 – Jan 2, 2027',
+    );
+    expect(norm(info.formatDateRange(new Date(2026, 8, 3), new Date(2026, 8, 3)))).toBe(
+      'Sep 3, 2026',
+    );
+  });
+
   it('formats day numbers with the locale digits', () => {
     expect(getLocaleInfo('ar-EG').formatDayNumber(new Date(2026, 8, 24))).toBe('٢٤');
     expect(getLocaleInfo('en-US').formatDayNumber(new Date(2026, 8, 4))).toBe('4');
@@ -193,6 +206,7 @@ describe('defaultLabels', () => {
   it('provides English strings for every non-Intl label', () => {
     expect(defaultLabels.previousMonth).toBe('Previous month');
     expect(defaultLabels.selectedDates(5)).toBe('5 dates');
+    expect(defaultLabels.presets).toBe('Presets');
     for (const value of Object.values(defaultLabels)) {
       expect(typeof value === 'string' ? value.length : typeof value).toBeTruthy();
     }

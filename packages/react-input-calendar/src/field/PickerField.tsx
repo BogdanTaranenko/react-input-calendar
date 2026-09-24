@@ -30,6 +30,8 @@ export interface PickerFieldProps extends SlotProps {
   /** The formatted value; empty shows the placeholder. */
   text: string;
   hasValue: boolean;
+  /** Whether the value satisfies `required`. Default `hasValue`; a half-picked range is not. */
+  complete?: boolean | undefined;
   open: boolean;
   onOpen: () => void;
   onClear: () => void;
@@ -51,6 +53,7 @@ const joinIds = (...ids: (string | false)[]) => ids.filter(Boolean).join(' ') ||
 export function PickerField(props: PickerFieldProps) {
   const { label, description, error, hasValue, triggerRef, labels } = props;
   const { disabled = false, readOnly = false, clearable = true, icon } = props;
+  const complete = props.complete ?? hasValue;
   const slot = useSlots(props);
   const baseId = useId();
   const triggerId = props.id ?? `${baseId}-trigger`;
@@ -61,10 +64,10 @@ export function PickerField(props: PickerFieldProps) {
 
   // Like a native input, a disabled or read-only field is not validated.
   const validates = Boolean(props.required) && !disabled && !readOnly;
-  // Set by a blocked form submission; a value, or no longer validating, clears it (adjusting
-  // state during render).
+  // Set by a blocked form submission; a complete value, or no longer validating, clears it
+  // (adjusting state during render).
   const [requiredFailed, setRequiredFailed] = useState(false);
-  if (requiredFailed && (hasValue || !validates)) setRequiredFailed(false);
+  if (requiredFailed && (complete || !validates)) setRequiredFailed(false);
   const invalid = isShown(error) || requiredFailed;
 
   // The name is always "<name> <value>". The trigger names itself (it can reference its own
@@ -151,7 +154,7 @@ export function PickerField(props: PickerFieldProps) {
       <HiddenInputs {...props.formValue} disabled={disabled} />
       {validates && (
         <RequiredValidator
-          hasValue={hasValue}
+          hasValue={complete}
           triggerRef={triggerRef}
           onInvalid={() => {
             setRequiredFailed(true);

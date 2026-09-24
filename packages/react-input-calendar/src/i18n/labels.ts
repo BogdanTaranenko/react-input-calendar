@@ -21,6 +21,8 @@ export interface CalendarLabels {
   rangeStart: string;
   rangeEnd: string;
   unavailable: string;
+  /** Names the group of range presets. */
+  presets: string;
 }
 
 export const defaultLabels: Readonly<CalendarLabels> = Object.freeze({
@@ -42,4 +44,5 @@ export const defaultLabels: Readonly<CalendarLabels> = Object.freeze({
   rangeStart: 'start of range',
   rangeEnd: 'end of range',
   unavailable: 'unavailable',
+  presets: 'Presets',
 });

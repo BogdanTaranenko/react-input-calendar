@@ -426,6 +426,19 @@ describe('PickerField — required', () => {
     expect(onSubmit).toHaveBeenCalledOnce();
   });
 
+  it('blocks submission for a shown but incomplete value, and keeps the invalid mark', () => {
+    const { form, onSubmit } = renderForm({ initial: SEP_24, complete: false });
+    expect(trigger()).toHaveTextContent('Sep 24, 2026');
+    expect(clearButton()).not.toBeNull();
+    expect(form.checkValidity()).toBe(false);
+
+    act(() => {
+      form.requestSubmit();
+    });
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(root()).toHaveAttribute('data-invalid');
+  });
+
   it('adds no named field, and stays out of the tab order and the accessibility tree', () => {
     const { form } = renderForm({ initial: SEP_24 });
     const validator = form.querySelector('input[required]') as HTMLInputElement;

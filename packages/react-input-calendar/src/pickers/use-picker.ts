@@ -23,6 +23,8 @@ export interface UsePickerOptions<T> {
   /** What the clear button sets. */
   emptyValue: T;
   isEmpty: (value: T) => boolean;
+  /** Whether a non-empty value satisfies `required`. Default: any non-empty value does. */
+  isComplete?: ((value: T) => boolean) | undefined;
   /** Trigger text for a non-empty value. */
   format: (value: NonNullable<T>, localeInfo: LocaleInfo, locale: string) => string;
   disabled?: boolean | undefined;
@@ -100,6 +102,7 @@ export function usePicker<T>(options: UsePickerOptions<T>) {
       // isEmpty is the runtime check that rules out null here.
       text: hasValue ? options.format(value as NonNullable<T>, localeInfo, locale) : '',
       hasValue,
+      complete: hasValue && (options.isComplete?.(value) ?? true),
       open,
       onOpen: () => {
         if (!disabled && !readOnly) setOpen(true);

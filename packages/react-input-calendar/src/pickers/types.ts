@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { ColorScheme } from '../core/config-context';
 import type { SlotProps } from '../core/slots';
-import type { DateMatcher } from '../core/types';
+import type { DateMatcher, DateRange, RangeConstraints } from '../core/types';
 import type { WeekStartsOn } from '../date/date-math';
 import type { CalendarLabels } from '../i18n/labels';
 import type { DayRenderProps } from '../calendar/types';
@@ -69,4 +69,37 @@ export interface DatePickerProps extends SharedPickerProps<Date> {
   name?: string | undefined;
   /** Default `true`. */
   closeOnSelect?: boolean | undefined;
+}
+
+/** A one-click range offered beside the calendar. */
+export interface RangePreset {
+  label: ReactNode;
+  /**
+   * Called on click, so relative ranges ("last 7 days") use the current day, and on render to
+   * mark the preset matching the value: keep it cheap and free of side effects. `from` must not
+   * be after `to`; a `to` of `null` sets the start and leaves the picker open for the end.
+   */
+  value: () => DateRange;
+}
+
+export interface DateRangePickerProps extends SharedPickerProps<DateRange>, RangeConstraints {
+  value?: DateRange | null | undefined;
+  defaultValue?: DateRange | null | undefined;
+  /**
+   * Called with each change at local midnight: `{ from, to: null }` after the first click, the
+   * full range after the second, or `null` when cleared.
+   */
+  onChange?: ((value: DateRange | null) => void) | undefined;
+  /** Submits the start as `YYYY-MM-DD` in a native form. */
+  startName?: string | undefined;
+  /** Submits the end as `YYYY-MM-DD`, or an empty string while it is not picked. */
+  endName?: string | undefined;
+  /** Months shown side by side, 1–3. Default 2 in the popover, 1 in the bottom sheet. */
+  numberOfMonths?: number | undefined;
+  /**
+   * One-click ranges, shown before the months. A preset sets its range as given, normalised to
+   * local midnight: `minDays`, `maxDays` and `disabledDates` do not apply, since the consumer
+   * decides what to offer.
+   */
+  presets?: RangePreset[] | undefined;
 }

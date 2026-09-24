@@ -21,6 +21,8 @@ export interface LocaleInfo {
   formatMonthYear: (date: Date) => string;
   /** Trigger text, e.g. "Sep 24, 2026". */
   formatDate: (date: Date) => string;
+  /** Range trigger text with the shared parts collapsed, e.g. "Sep 3 – 9, 2026". */
+  formatDateRange: (from: Date, to: Date) => string;
   formatDateTime: (date: Date, hourCycle: HourCycle) => string;
   /** Day number with locale digits, e.g. "٢٤" for ar-EG. */
   formatDayNumber: (date: Date) => string;
@@ -93,6 +95,7 @@ function buildLocaleInfo(requested: string): LocaleInfo {
     12: formatter(locale, { dateStyle: 'medium', timeStyle: 'short', hourCycle: 'h12' }),
     24: formatter(locale, { dateStyle: 'medium', timeStyle: 'short', hourCycle: 'h23' }),
   };
+  const dateRange = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' });
   const list = new Intl.ListFormat(locale, { type: 'conjunction', style: 'long' });
 
   return {
@@ -118,6 +121,7 @@ function buildLocaleInfo(requested: string): LocaleInfo {
     }),
     formatMonthYear: formatter(locale, { month: 'long', year: 'numeric' }),
     formatDate: formatter(locale, { dateStyle: 'medium' }),
+    formatDateRange: (from, to) => dateRange.formatRange(from, to),
     formatDateTime: (date, hourCycle) => dateTime[hourCycle](date),
     formatDayNumber: formatter(locale, { day: 'numeric' }),
     formatYear: formatter(locale, { year: 'numeric' }),
