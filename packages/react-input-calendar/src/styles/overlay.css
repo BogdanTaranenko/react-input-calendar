@@ -1,0 +1,140 @@
+/*
+ * Popup surfaces. Both are native <dialog>s opened with showModal(), so they sit
+ * in the top layer and need no z-index. Position comes from inline styles
+ * (use-position.ts), which also keeps the popover placed without this file.
+ */
+@layer ric {
+  .ric-popover {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    max-height: none;
+    overflow: visible;
+    border: 1px solid var(--ric-border);
+    border-radius: var(--ric-radius);
+    background: var(--ric-surface);
+    box-shadow: var(--ric-shadow);
+  }
+
+  /* Children: presets | calendar | time panel, with the footer on its own row. */
+  .ric-popover[open] {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .ric-popover[data-placement="bottom-start"] {
+    transform-origin: top left;
+  }
+  .ric-popover[data-placement="bottom-end"] {
+    transform-origin: top right;
+  }
+  .ric-popover[data-placement="top-start"] {
+    transform-origin: bottom left;
+  }
+  .ric-popover[data-placement="top-end"] {
+    transform-origin: bottom right;
+  }
+  [dir="rtl"] .ric-popover[data-placement="bottom-start"] {
+    transform-origin: top right;
+  }
+  [dir="rtl"] .ric-popover[data-placement="bottom-end"] {
+    transform-origin: top left;
+  }
+  [dir="rtl"] .ric-popover[data-placement="top-start"] {
+    transform-origin: bottom right;
+  }
+  [dir="rtl"] .ric-popover[data-placement="top-end"] {
+    transform-origin: bottom left;
+  }
+
+  /* ::backdrop inherits custom properties only in recent browsers, so no var() here. */
+  .ric-popover::backdrop {
+    background: transparent;
+  }
+
+  .ric-backdrop {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--ric-backdrop);
+  }
+
+  .ric-backdrop::backdrop {
+    background: transparent;
+  }
+
+  .ric-sheet {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: calc(100dvh - var(--ric-padding) * 4);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: env(safe-area-inset-bottom);
+    border-radius: var(--ric-radius) var(--ric-radius) 0 0;
+    background: var(--ric-surface);
+    box-shadow: var(--ric-shadow);
+
+    /* AC-6: every touch target in the sheet is at least 44×44. */
+    --ric-cell-size: 44px;
+    --ric-time-option-size: 44px;
+  }
+
+  /* A 4px bar with a larger transparent hit area for dragging. */
+  .ric-sheet-handle {
+    flex: none;
+    box-sizing: content-box;
+    width: calc(var(--ric-cell-size) * 0.8);
+    height: 4px;
+    padding: calc(var(--ric-padding) * 2 / 3) var(--ric-padding);
+    border-radius: var(--ric-radius-cell);
+    background: var(--ric-border);
+    background-clip: content-box;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  /* Vertical scrolling stays native; horizontal swipes change month (use-swipe.ts). */
+  .ric-sheet .ric-months {
+    touch-action: pan-y;
+  }
+
+  /* Inline-size containment: the full-width footer must not widen the popover itself. */
+  .ric-footer {
+    contain: inline-size;
+    display: flex;
+    flex-basis: 100%;
+    justify-content: flex-end;
+    padding: var(--ric-padding);
+    border-top: 1px solid var(--ric-border);
+  }
+
+  .ric-done-button {
+    min-height: var(--ric-cell-size);
+    padding-inline: calc(var(--ric-padding) * 1.5);
+    border-radius: calc(var(--ric-radius) * 2 / 3);
+    background: var(--ric-accent);
+    color: var(--ric-accent-contrast);
+    font-weight: 600;
+  }
+
+  .ric-done-button:hover {
+    background: color-mix(in oklab, var(--ric-accent) 88%, black);
+  }
+
+  .ric-sheet .ric-footer {
+    align-self: stretch;
+  }
+
+  .ric-sheet .ric-done-button {
+    flex: 1;
+  }
+}

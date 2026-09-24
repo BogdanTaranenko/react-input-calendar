@@ -1,0 +1,353 @@
+/*
+ * Calendar: header, day grid, month/year views and range presets.
+ * Day state lives on the <td> (§ 2.2 data attributes); the button inside is the
+ * circle, and the range band is the td's ::before, painted beneath the button.
+ */
+@layer ric {
+  .ric-calendar {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--ric-padding) * 2 / 3);
+    padding: var(--ric-padding);
+  }
+
+  /* A standalone <Calendar> is a card; inside a popup the surface is the card. */
+  .ric-root > .ric-calendar {
+    border: 1px solid var(--ric-border);
+    border-radius: var(--ric-radius);
+    background: var(--ric-surface);
+  }
+
+  .ric-header {
+    display: flex;
+    align-items: center;
+    gap: var(--ric-gap);
+  }
+
+  .ric-caption {
+    margin-inline-end: auto;
+    min-height: var(--ric-cell-size);
+    padding-inline: calc(var(--ric-padding) * 2 / 3);
+    border-radius: var(--ric-radius-cell);
+    font-weight: 600;
+  }
+
+  /* Several months: previous and next at the outer edges, each caption centred over its grid. */
+  .ric-month:not(:only-child) > .ric-header {
+    display: grid;
+    grid-template-columns: var(--ric-cell-size) 1fr var(--ric-cell-size);
+  }
+
+  .ric-month:not(:only-child) .ric-caption {
+    grid-column: 2;
+    justify-self: center;
+    margin-inline-end: 0;
+  }
+
+  .ric-month:not(:only-child) .ric-nav-button[data-nav="next"] {
+    grid-column: 3;
+  }
+
+  .ric-nav-button {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--ric-cell-size);
+    height: var(--ric-cell-size);
+    border-radius: var(--ric-radius-cell);
+    color: var(--ric-text-muted);
+  }
+
+  .ric-caption:hover,
+  .ric-nav-button:hover {
+    background: var(--ric-hover);
+    color: var(--ric-text);
+  }
+
+  .ric-nav-button:disabled {
+    background: none;
+    color: var(--ric-text-muted);
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  /* The chevrons point the way the month moves, so they flip with the text direction. */
+  [dir="rtl"] .ric-nav-button > svg {
+    transform: scaleX(-1);
+  }
+
+  .ric-months {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--ric-padding) * 2);
+  }
+
+  @media (min-width: 640px) {
+    .ric-months {
+      flex-direction: row;
+    }
+  }
+
+  .ric-month {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--ric-padding) * 2 / 3);
+  }
+
+  .ric-grid {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+  }
+
+  .ric-weekday {
+    width: var(--ric-cell-size);
+    height: calc(var(--ric-cell-size) * 0.8);
+    padding: 0;
+    color: var(--ric-text-muted);
+    font-size: calc(var(--ric-font-size) * 0.857);
+    font-weight: 500;
+    text-align: center;
+  }
+
+  /* No horizontal padding, so the range band runs unbroken across a week. */
+  .ric-day {
+    position: relative;
+    width: var(--ric-cell-size);
+    padding: calc(var(--ric-gap) / 2) 0;
+    text-align: center;
+  }
+
+  .ric-day-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ric-cell-size);
+    height: var(--ric-cell-size);
+    border-radius: var(--ric-radius-cell);
+    font-variant-numeric: tabular-nums;
+    vertical-align: top;
+  }
+
+  .ric-day-button:hover {
+    background: var(--ric-hover);
+  }
+
+  .ric-day[data-outside] > .ric-day-button {
+    color: var(--ric-text-muted);
+  }
+
+  .ric-day[data-today] > .ric-day-button {
+    box-shadow: inset 0 0 0 1px var(--ric-today-ring);
+    font-weight: 600;
+  }
+
+  .ric-day[data-today] > .ric-day-button:focus-visible {
+    box-shadow: var(--ric-focus-ring);
+  }
+
+  .ric-day[data-disabled] > .ric-day-button {
+    background: none;
+    color: var(--ric-text-muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .ric-day:is([data-selected], [data-range-start], [data-range-end]) > .ric-day-button {
+    background: var(--ric-accent);
+    color: var(--ric-accent-contrast);
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  /*
+   * Range band. Start and end cells are fully round (hidden behind the circle) and
+   * only square the side that joins the band, so a range that has no end yet
+   * shows no stray corners. In-range cells round off at the week edges.
+   */
+  .ric-day:is([data-in-range], [data-range-start], [data-range-end])::before {
+    content: "";
+    position: absolute;
+    inset-block: calc(var(--ric-gap) / 2);
+    inset-inline: 0;
+    background: var(--ric-range-bg);
+  }
+
+  .ric-day:is([data-range-start], [data-range-end])::before {
+    border-radius: var(--ric-radius-cell);
+  }
+
+  .ric-day:is([data-in-range], [data-range-start]) + .ric-day[data-range-end]::before {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+
+  /* Kept separate: browsers without :has() drop only this rule (the start stays round). */
+  .ric-day[data-range-start]:has(+ .ric-day:is([data-in-range], [data-range-end]))::before {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .ric-day[data-in-range]:first-child::before {
+    border-start-start-radius: var(--ric-radius-cell);
+    border-end-start-radius: var(--ric-radius-cell);
+  }
+
+  .ric-day[data-in-range]:last-child::before {
+    border-start-end-radius: var(--ric-radius-cell);
+    border-end-end-radius: var(--ric-radius-cell);
+  }
+
+  /* Hover preview of an in-progress range: a dashed outline band. */
+  .ric-day[data-preview]::before {
+    content: "";
+    position: absolute;
+    inset-block: calc(var(--ric-gap) / 2);
+    inset-inline: 0;
+    border-block: 1px dashed var(--ric-preview-border);
+  }
+
+  .ric-day[data-preview]:first-child::before,
+  .ric-day:not([data-preview]) + .ric-day[data-preview]::before {
+    border-inline-start: 1px dashed var(--ric-preview-border);
+    border-start-start-radius: var(--ric-radius-cell);
+    border-end-start-radius: var(--ric-radius-cell);
+  }
+
+  .ric-day[data-preview]:last-child::before {
+    border-inline-end: 1px dashed var(--ric-preview-border);
+    border-start-end-radius: var(--ric-radius-cell);
+    border-end-end-radius: var(--ric-radius-cell);
+  }
+
+  /* Kept separate: browsers without :has() drop only this rule (the end stays square). */
+  .ric-day[data-preview]:has(+ .ric-day:not([data-preview]))::before {
+    border-inline-end: 1px dashed var(--ric-preview-border);
+    border-start-end-radius: var(--ric-radius-cell);
+    border-end-end-radius: var(--ric-radius-cell);
+  }
+
+  /* Month and year views: 3 × 4 pills, the same size as the day grid so nothing jumps. */
+  .ric-month-grid,
+  .ric-year-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-content: space-evenly;
+    gap: var(--ric-gap) calc(var(--ric-padding) / 3);
+    width: calc(var(--ric-cell-size) * 7);
+    height: calc(var(--ric-cell-size) * 0.8 + (var(--ric-cell-size) + var(--ric-gap)) * 6);
+  }
+
+  .ric-month-grid > [role="row"],
+  .ric-year-grid > [role="row"] {
+    display: contents;
+  }
+
+  .ric-month-button,
+  .ric-year-button {
+    min-height: var(--ric-cell-size);
+    border-radius: var(--ric-radius-cell);
+  }
+
+  .ric-month-button:hover,
+  .ric-year-button:hover {
+    background: var(--ric-hover);
+  }
+
+  .ric-month-button[data-current],
+  .ric-year-button[data-current] {
+    box-shadow: inset 0 0 0 1px var(--ric-today-ring);
+    font-weight: 600;
+  }
+
+  .ric-month-button[data-current]:focus-visible,
+  .ric-year-button[data-current]:focus-visible {
+    box-shadow: var(--ric-focus-ring);
+  }
+
+  .ric-month-button[data-disabled],
+  .ric-year-button[data-disabled] {
+    background: none;
+    color: var(--ric-text-muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .ric-month-button[data-selected],
+  .ric-year-button[data-selected] {
+    background: var(--ric-accent);
+    color: var(--ric-accent-contrast);
+    font-weight: 600;
+  }
+
+  /* Range presets: a column beside the months in the popover, a chip row in the sheet. */
+  .ric-presets {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ric-gap);
+    padding: var(--ric-padding);
+    border-inline-end: 1px solid var(--ric-border);
+  }
+
+  .ric-preset {
+    min-height: calc(var(--ric-cell-size) * 0.8);
+    padding-inline: var(--ric-padding);
+    border-radius: var(--ric-radius-cell);
+    text-align: start;
+    white-space: nowrap;
+  }
+
+  .ric-preset:hover {
+    background: var(--ric-hover);
+  }
+
+  .ric-preset[data-active] {
+    background: var(--ric-range-bg);
+    font-weight: 600;
+  }
+
+  .ric-sheet .ric-presets {
+    flex-direction: row;
+    align-self: stretch;
+    overflow-x: auto;
+    border-inline-end: 0;
+    border-bottom: 1px solid var(--ric-border);
+    scrollbar-width: none;
+  }
+
+  .ric-sheet .ric-preset {
+    flex: none;
+    min-height: var(--ric-cell-size);
+    border: 1px solid var(--ric-border);
+  }
+
+  .ric-live-region {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Forced colours drop backgrounds and shadows, so selection and focus become outlines. */
+  @media (forced-colors: active) {
+    .ric-day[data-today] > .ric-day-button {
+      outline: 1px solid CanvasText;
+      outline-offset: -1px;
+    }
+
+    /* After the today rule and at least as specific, so a selected or focused today wins. */
+    .ric-day:is([data-selected], [data-range-start], [data-range-end]) > .ric-day-button,
+    .ric-day > .ric-day-button:focus-visible,
+    .ric-month-button[data-selected],
+    .ric-year-button[data-selected],
+    .ric-month-button:focus-visible,
+    .ric-year-button:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+  }
+}

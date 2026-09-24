@@ -1,0 +1,97 @@
+/*
+ * Time panel: scroll-snap columns (hours, minutes, AM/PM). A flex row follows
+ * the text direction, so under dir=rtl the columns reverse with no extra rule.
+ */
+@layer ric {
+  .ric-time-panel {
+    display: flex;
+    gap: var(--ric-gap);
+    padding: var(--ric-padding);
+    border-inline-start: 1px solid var(--ric-border);
+  }
+
+  /*
+   * Size containment keeps 60 minute options from growing the popover: beside the
+   * calendar, the columns stretch to its height instead.
+   */
+  .ric-time-column {
+    contain: size;
+    width: calc(var(--ric-time-option-size) * 1.5);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-block: calc(var(--ric-time-option-size) * 3);
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      #000 var(--ric-time-option-size),
+      #000 calc(100% - var(--ric-time-option-size)),
+      transparent
+    );
+  }
+
+  .ric-time-column::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ric-time-column:focus-visible {
+    outline: none;
+  }
+
+  .ric-time-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--ric-time-option-size);
+    border-radius: calc(var(--ric-radius) * 2 / 3);
+    font-variant-numeric: tabular-nums;
+    scroll-snap-align: center;
+  }
+
+  .ric-time-option:hover {
+    background: var(--ric-hover);
+  }
+
+  /* Covers both focus models: roving tabindex on options, or the column holding focus. */
+  .ric-time-column:focus-visible .ric-time-option[data-focused] {
+    box-shadow: var(--ric-focus-ring);
+  }
+
+  .ric-time-option[data-disabled] {
+    background: none;
+    color: var(--ric-text-muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .ric-time-option[data-selected] {
+    background: var(--ric-accent);
+    color: var(--ric-accent-contrast);
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  /* Stacked under the calendar in the sheet, with no neighbour to take the height from. */
+  .ric-sheet .ric-time-panel {
+    justify-content: center;
+    align-self: stretch;
+    border-inline-start: 0;
+    border-top: 1px solid var(--ric-border);
+  }
+
+  .ric-sheet .ric-time-column {
+    height: calc(var(--ric-time-option-size) * 5);
+    padding-block: calc(var(--ric-time-option-size) * 2);
+  }
+
+  @media (forced-colors: active) {
+    .ric-time-option[data-selected],
+    .ric-time-column:focus-visible .ric-time-option[data-focused],
+    .ric-time-option:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+  }
+}

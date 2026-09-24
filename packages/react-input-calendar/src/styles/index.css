@@ -1,1 +1,10 @@
-@layer ric {}
+/*
+ * Entry point for dist/styles.css. `@layer ric { @import … }` is invalid CSS,
+ * so each partial wraps its own rules in @layer ric.
+ */
+@import "./tokens.css";
+@import "./field.css";
+@import "./overlay.css";
+@import "./calendar.css";
+@import "./time.css";
+@import "./motion.css";

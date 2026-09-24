@@ -1,0 +1,137 @@
+/*
+ * The always-visible field: label, trigger, clear button, helper and error text.
+ * The field is as wide as a one-month calendar by default; set --ric-field-width
+ * (or a width on the root) to change it.
+ */
+@layer ric {
+  .ric-root {
+    display: inline-flex;
+    flex-direction: column;
+    gap: calc(var(--ric-padding) / 3);
+    vertical-align: top;
+    max-width: 100%;
+  }
+
+  .ric-label {
+    font-weight: 500;
+  }
+
+  .ric-field {
+    position: relative;
+    width: var(--ric-field-width, calc(var(--ric-cell-size) * 7 + var(--ric-padding) * 2 + 2px));
+    max-width: 100%;
+  }
+
+  .ric-trigger {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--ric-padding) / 2);
+    width: 100%;
+    min-height: var(--ric-field-height);
+    padding-inline-start: var(--ric-padding);
+    border: 1px solid var(--ric-border);
+    border-radius: calc(var(--ric-radius) * 2 / 3);
+    background: var(--ric-bg);
+    text-align: start;
+  }
+
+  .ric-trigger:hover {
+    border-color: color-mix(in oklab, var(--ric-accent) 45%, var(--ric-border));
+  }
+
+  .ric-trigger:focus-visible,
+  .ric-root[data-open] .ric-trigger {
+    border-color: var(--ric-accent);
+  }
+
+  .ric-root[data-invalid] .ric-trigger,
+  .ric-trigger[aria-invalid="true"] {
+    border-color: var(--ric-danger);
+  }
+
+  .ric-root[data-invalid] .ric-trigger:focus-visible,
+  .ric-trigger[aria-invalid="true"]:focus-visible {
+    box-shadow: 0 0 0 2px var(--ric-surface), 0 0 0 4px var(--ric-danger);
+  }
+
+  .ric-trigger:disabled {
+    cursor: not-allowed;
+  }
+
+  .ric-root[data-disabled] .ric-field {
+    opacity: 0.5;
+  }
+
+  .ric-root[data-readonly] .ric-trigger {
+    cursor: default;
+    background: var(--ric-surface-raised);
+  }
+
+  .ric-trigger-value {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ric-trigger[data-placeholder] .ric-trigger-value {
+    color: var(--ric-text-muted);
+  }
+
+  /* The icon cell is exactly the area the clear button covers when it shows. */
+  .ric-trigger-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    width: calc(var(--ric-field-height) - 2px);
+    color: var(--ric-text-muted);
+  }
+
+  .ric-clear-button {
+    position: absolute;
+    inset-block: 1px;
+    inset-inline-end: 1px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--ric-field-height) - 2px);
+    border-radius: calc(var(--ric-radius) * 2 / 3 - 1px);
+    background: var(--ric-bg);
+    color: var(--ric-text-muted);
+    opacity: 0;
+  }
+
+  .ric-field:hover .ric-clear-button,
+  .ric-field:focus-within .ric-clear-button {
+    opacity: 1;
+  }
+
+  .ric-clear-button:hover {
+    color: var(--ric-text);
+  }
+
+  /* Touch screens have no hover, so the clear button is always shown there. */
+  @media (hover: none) {
+    .ric-clear-button {
+      opacity: 1;
+    }
+  }
+
+  .ric-description,
+  .ric-error {
+    width: var(--ric-field-width, calc(var(--ric-cell-size) * 7 + var(--ric-padding) * 2 + 2px));
+    max-width: 100%;
+    font-size: calc(var(--ric-font-size) * 0.857);
+  }
+
+  .ric-description {
+    color: var(--ric-text-muted);
+  }
+
+  .ric-error {
+    color: var(--ric-danger);
+  }
+}

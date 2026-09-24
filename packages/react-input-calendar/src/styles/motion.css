@@ -1,0 +1,91 @@
+/*
+ * Motion. Everything is opt-in behind prefers-reduced-motion: no-preference,
+ * so reduced-motion users get no animation at all. No fill-mode: once an
+ * animation ends, the sheet's inline drag transform applies again.
+ */
+@layer ric {
+  @media (prefers-reduced-motion: no-preference) {
+    .ric-popover[open] {
+      animation: ric-pop-in var(--ric-duration) var(--ric-ease);
+    }
+
+    .ric-backdrop[open] {
+      animation: ric-fade-in var(--ric-duration) var(--ric-ease);
+    }
+
+    .ric-backdrop[open] .ric-sheet {
+      animation: ric-sheet-in calc(var(--ric-duration) * 1.5) var(--ric-ease);
+    }
+
+    .ric-grid[data-direction="next"] {
+      animation: ric-slide-from-end var(--ric-duration) var(--ric-ease);
+    }
+
+    .ric-grid[data-direction="prev"] {
+      animation: ric-slide-from-start var(--ric-duration) var(--ric-ease);
+    }
+
+    [dir="rtl"] .ric-grid[data-direction="next"] {
+      animation-name: ric-slide-from-start;
+    }
+
+    [dir="rtl"] .ric-grid[data-direction="prev"] {
+      animation-name: ric-slide-from-end;
+    }
+
+    .ric-trigger,
+    .ric-clear-button,
+    .ric-caption,
+    .ric-nav-button,
+    .ric-day-button,
+    .ric-month-button,
+    .ric-year-button,
+    .ric-preset,
+    .ric-time-option,
+    .ric-done-button {
+      transition:
+        background-color var(--ric-duration) var(--ric-ease),
+        border-color var(--ric-duration) var(--ric-ease),
+        box-shadow var(--ric-duration) var(--ric-ease),
+        color var(--ric-duration) var(--ric-ease),
+        opacity var(--ric-duration) var(--ric-ease);
+    }
+
+    .ric-time-column {
+      scroll-behavior: smooth;
+    }
+  }
+
+  @keyframes ric-pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+
+  @keyframes ric-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes ric-sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes ric-slide-from-end {
+    from {
+      opacity: 0;
+      transform: translateX(calc(var(--ric-cell-size) * 0.3));
+    }
+  }
+
+  @keyframes ric-slide-from-start {
+    from {
+      opacity: 0;
+      transform: translateX(calc(var(--ric-cell-size) * -0.3));
+    }
+  }
+}
