@@ -10,7 +10,8 @@ const at = (hours: number, minutes: number) => new Date(2026, 8, 24, hours, minu
 
 const column = (name: string) => screen.getByRole('listbox', { name });
 const options = (name: string) => within(column(name)).getAllByRole('option');
-const option = (name: string, label: string) => within(column(name)).getByRole('option', { name: label });
+const option = (name: string, label: string) =>
+  within(column(name)).getByRole('option', { name: label });
 const texts = (name: string) => options(name).map((element) => element.textContent);
 
 /** A TimePanel holding its own value, like the DateTimePicker will. */
@@ -48,7 +49,20 @@ describe('TimePanel — columns', () => {
   it('shows hours, minutes and AM/PM on a 12-hour clock', () => {
     render(<TimePanel locale="en-US" value={at(14, 5)} onChange={vi.fn()} />);
     expect(screen.getAllByRole('listbox')).toHaveLength(3);
-    expect(texts('Hours')).toEqual(['12', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11']);
+    expect(texts('Hours')).toEqual([
+      '12',
+      '01',
+      '02',
+      '03',
+      '04',
+      '05',
+      '06',
+      '07',
+      '08',
+      '09',
+      '10',
+      '11',
+    ]);
     expect(texts('AM/PM')).toEqual(['AM', 'PM']);
     expect(option('Hours', '02')).toHaveAttribute('aria-selected', 'true');
     expect(option('Hours', '02')).toHaveAttribute('data-selected');
@@ -66,7 +80,9 @@ describe('TimePanel — columns', () => {
   });
 
   it('gives 4 minute options with minuteStep=15, and 12 by default', () => {
-    const { rerender } = render(<TimePanel locale="en-US" minuteStep={15} value={null} onChange={vi.fn()} />);
+    const { rerender } = render(
+      <TimePanel locale="en-US" minuteStep={15} value={null} onChange={vi.fn()} />,
+    );
     expect(texts('Minutes')).toEqual(['00', '15', '30', '45']);
     rerender(<TimePanel locale="en-US" value={null} onChange={vi.fn()} />);
     expect(options('Minutes')).toHaveLength(12);
@@ -233,12 +249,15 @@ describe('TimePanel — min and max', () => {
   const limits = { min: at(9, 20), max: at(17, 40) };
 
   it('disables hours with no allowed minute, and minutes outside the limits', () => {
-    render(<TimePanel locale="en-US" hourCycle={24} value={at(9, 30)} onChange={vi.fn()} {...limits} />);
+    render(
+      <TimePanel locale="en-US" hourCycle={24} value={at(9, 30)} onChange={vi.fn()} {...limits} />,
+    );
     for (const hour of ['00', '08', '18', '23']) {
       expect(option('Hours', hour)).toHaveAttribute('aria-disabled', 'true');
       expect(option('Hours', hour)).toHaveAttribute('data-disabled');
     }
-    for (const hour of ['09', '17']) expect(option('Hours', hour)).not.toHaveAttribute('aria-disabled');
+    for (const hour of ['09', '17'])
+      expect(option('Hours', hour)).not.toHaveAttribute('aria-disabled');
     expect(option('Minutes', '15')).toHaveAttribute('data-disabled');
     expect(option('Minutes', '20')).not.toHaveAttribute('data-disabled');
   });
@@ -249,13 +268,50 @@ describe('TimePanel — min and max', () => {
     expect(option('AM/PM', 'PM')).not.toHaveAttribute('data-disabled');
   });
 
+  it('checks the limits against `day` when there is no value, selecting nothing', () => {
+    render(
+      <TimePanel
+        locale="en-US"
+        hourCycle={24}
+        value={null}
+        day={DAY}
+        onChange={vi.fn()}
+        {...limits}
+      />,
+    );
+    expect(option('Hours', '08')).toHaveAttribute('aria-disabled', 'true');
+    expect(option('Hours', '09')).not.toHaveAttribute('aria-disabled');
+    expect(option('Hours', '18')).toHaveAttribute('aria-disabled', 'true');
+    expect(screen.queryAllByRole('option', { selected: true })).toHaveLength(0);
+  });
+
+  it("prefers the value's day over `day` for the limits", () => {
+    render(
+      <TimePanel
+        locale="en-US"
+        hourCycle={24}
+        value={at(12, 0)}
+        day={new Date(2026, 8, 25)}
+        onChange={vi.fn()}
+        min={limits.min}
+      />,
+    );
+    expect(option('Hours', '08')).toHaveAttribute('aria-disabled', 'true');
+  });
+
   it('disables nothing when there is no value, or on a day inside the limits', () => {
     const { rerender } = render(
       <TimePanel locale="en-US" hourCycle={24} value={null} onChange={vi.fn()} {...limits} />,
     );
     expect(document.querySelectorAll('[data-disabled]')).toHaveLength(0);
     rerender(
-      <TimePanel locale="en-US" hourCycle={24} value={DAY} onChange={vi.fn()} min={new Date(2026, 8, 1)} />,
+      <TimePanel
+        locale="en-US"
+        hourCycle={24}
+        value={DAY}
+        onChange={vi.fn()}
+        min={new Date(2026, 8, 1)}
+      />,
     );
     expect(document.querySelectorAll('[data-disabled]')).toHaveLength(0);
   });
@@ -289,14 +345,17 @@ describe('TimePanel — min and max', () => {
     });
     await user.keyboard('{ArrowUp}');
     expect(option('Hours', '08')).toHaveAttribute('data-focused');
-    rerender(<TimePanel locale="en-US" hourCycle={24} value={at(15, 0)} onChange={vi.fn()} {...limits} />);
+    rerender(
+      <TimePanel locale="en-US" hourCycle={24} value={at(15, 0)} onChange={vi.fn()} {...limits} />,
+    );
     expect(option('Hours', '15')).toHaveAttribute('data-focused');
     expect(option('Hours', '08')).not.toHaveAttribute('data-focused');
   });
 });
 
 describe('TimePanel — scrolling', () => {
-  const centredCalls = () => scrollTo.mock.calls.map(([options]) => (options as ScrollToOptions).behavior);
+  const centredCalls = () =>
+    scrollTo.mock.calls.map(([options]) => (options as ScrollToOptions).behavior);
 
   it('centres the focused option in its own column, instantly on mount and smoothly after', async () => {
     vi.stubGlobal('matchMedia', (query: string) => ({ matches: false, media: query }));

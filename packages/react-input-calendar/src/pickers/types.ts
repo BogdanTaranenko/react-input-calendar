@@ -2,8 +2,9 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { ColorScheme } from '../core/config-context';
 import type { SlotProps } from '../core/slots';
 import type { DateMatcher, DateRange, RangeConstraints } from '../core/types';
-import type { WeekStartsOn } from '../date/date-math';
+import type { TimeOfDay, WeekStartsOn } from '../date/date-math';
 import type { CalendarLabels } from '../i18n/labels';
+import type { HourCycle } from '../i18n/locale-info';
 import type { DayRenderProps } from '../calendar/types';
 import type { Placement } from '../overlay/compute-position';
 
@@ -117,4 +118,27 @@ export interface MultiDatePickerProps extends SharedPickerProps<Date[]> {
   name?: string | undefined;
   /** Once this many days are picked, others cannot be added until one is removed. */
   maxSelected?: number | undefined;
+}
+
+/**
+ * Every change is committed at once through `onChange`, so the picker closes only on Done,
+ * Escape or an outside press, and Escape does not revert. `min` and `max` are exact moments:
+ * a date-only `max` (midnight) allows no later time that day, so pass e.g. 23:59 for the whole
+ * day. Picked times are clamped into the limits, then onto the nearest `minuteStep` inside them.
+ * A time carried to a day where it does not exist (a DST spring-forward gap) moves forward by
+ * the gap, e.g. 02:30 becomes 03:30.
+ */
+export interface DateTimePickerProps extends SharedPickerProps<Date> {
+  value?: Date | null | undefined;
+  defaultValue?: Date | null | undefined;
+  /** Called on every day or time change, or with `null` when cleared. */
+  onChange?: ((value: Date | null) => void) | undefined;
+  /** Submits the value as `YYYY-MM-DDTHH:mm` in a native form. */
+  name?: string | undefined;
+  /** Default: the locale's clock. */
+  hourCycle?: HourCycle | undefined;
+  /** Minutes between time options. Default `5`. */
+  minuteStep?: number | undefined;
+  /** The time a first picked day gets. Default: now, rounded to `minuteStep`. */
+  defaultTime?: TimeOfDay | undefined;
 }

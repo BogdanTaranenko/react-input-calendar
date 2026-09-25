@@ -1,5 +1,6 @@
 import {
   useContext,
+  useEffect,
   useId,
   useLayoutEffect,
   useRef,
@@ -14,7 +15,7 @@ import { useSlots } from '../core/slots';
 import { useResolvedLocale } from '../core/use-resolved-locale';
 import { useSwipe } from '../core/use-swipe';
 import { addMonths, compareDay, isSameDay, isSameMonth, startOfMonth } from '../date/date-math';
-import { toISODate } from '../date/iso';
+import { parseISODate, toISODate } from '../date/iso';
 import { getLocaleInfo } from '../i18n/locale-info';
 import { SurfaceContext } from '../overlay/surface-context';
 import { CalendarHeader } from './CalendarHeader';
@@ -32,6 +33,8 @@ export interface CalendarViewProps extends CalendarViewOptions {
   idBase?: string | undefined;
   /** Attached to the grid's tab stop, for a dialog's initial focus. */
   tabStopRef?: Ref<HTMLButtonElement> | undefined;
+  /** Reports the day holding the tab stop on mount and whenever it moves to another day. */
+  onFocusedDateChange?: ((date: Date) => void) | undefined;
 }
 
 const MAX_MONTHS = 3;
@@ -94,6 +97,17 @@ function CalendarBody(props: CalendarBodyProps) {
     max,
   });
   const { visibleMonth, focusedDate } = state;
+
+  // Keyed by the day, not the Date object; the latest callback is read through a ref.
+  const focusedDay = toISODate(focusedDate);
+  const reportFocus = useRef(props.onFocusedDateChange);
+  useLayoutEffect(() => {
+    reportFocus.current = props.onFocusedDateChange;
+  });
+  useEffect(() => {
+    const date = parseISODate(focusedDay);
+    if (date) reportFocus.current?.(date);
+  }, [focusedDay]);
   const months = Array.from({ length: numberOfMonths }, (_, i) => addMonths(visibleMonth, i));
   const captions = months.map((month) => localeInfo.formatMonthYear(month));
   const captionId = (index: number) => `${baseId}-caption-${String(index)}`;

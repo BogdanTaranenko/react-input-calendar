@@ -5,6 +5,7 @@ import {
   getMinuteOptions,
   isTimeUnavailable,
   roundToStep,
+  snapToStepWithin,
   to24h,
 } from './time-utils';
 
@@ -42,13 +43,16 @@ describe('getMinuteOptions', () => {
     );
   });
 
-  it.each([0, -5, 1.5, 61, Number.NaN])('falls back to 1 with a dev warning for step %s', (step) => {
-    const warn = silence();
-    expect(getMinuteOptions(step)).toHaveLength(60);
-    expect(warn).toHaveBeenCalledExactlyOnceWith(
-      `[react-input-calendar] minuteStep must be a whole number from 1 to 60; got ${String(step)}. Using 1.`,
-    );
-  });
+  it.each([0, -5, 1.5, 61, Number.NaN])(
+    'falls back to 1 with a dev warning for step %s',
+    (step) => {
+      const warn = silence();
+      expect(getMinuteOptions(step)).toHaveLength(60);
+      expect(warn).toHaveBeenCalledExactlyOnceWith(
+        `[react-input-calendar] minuteStep must be a whole number from 1 to 60; got ${String(step)}. Using 1.`,
+      );
+    },
+  );
 });
 
 describe('to24h / from24h', () => {
@@ -71,6 +75,36 @@ describe('to24h / from24h', () => {
       const { hour12, period } = from24h(hour);
       expect(to24h(hour12, period)).toBe(hour);
     }
+  });
+});
+
+describe('snapToStepWithin', () => {
+  it('keeps a time already on the step', () => {
+    const time = at(10, 15);
+    expect(snapToStepWithin(time, 15, { min: at(10, 15) })).toBe(time);
+  });
+
+  it('moves a time up to the next step, within max', () => {
+    expect(hm(snapToStepWithin(at(10, 7), 15, { min: at(10, 7) }))).toEqual([24, 10, 15, 0]);
+    expect(hm(snapToStepWithin(at(10, 15, 23), 15, { min: at(10, 15, 23) }))).toEqual([
+      24, 10, 30, 0,
+    ]);
+    expect(hm(snapToStepWithin(at(10, 52), 15, {}))).toEqual([24, 11, 0, 0]);
+  });
+
+  it('moves a time down to the previous step when up would pass max', () => {
+    expect(hm(snapToStepWithin(at(16, 52), 15, { max: at(16, 52) }))).toEqual([24, 16, 45, 0]);
+  });
+
+  it('keeps the exact time when no step fits between min and max', () => {
+    const time = at(10, 7);
+    expect(snapToStepWithin(time, 15, { min: at(10, 5), max: at(10, 10) })).toBe(time);
+  });
+
+  it('never leaves the day', () => {
+    expect(hm(snapToStepWithin(at(23, 52), 15, {}))).toEqual([24, 23, 45, 0]);
+    const time = at(23, 52);
+    expect(snapToStepWithin(time, 15, { min: at(23, 50) })).toBe(time);
   });
 });
 

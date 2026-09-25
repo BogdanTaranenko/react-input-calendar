@@ -7,6 +7,7 @@ import type { CalendarLabels } from '../i18n/labels';
 import { getLocaleInfo, type HourCycle } from '../i18n/locale-info';
 import { TimeColumn, type TimeColumnOption } from './TimeColumn';
 import {
+  DEFAULT_MINUTE_STEP,
   from24h,
   getHourOptions,
   getMinuteOptions,
@@ -18,6 +19,8 @@ import {
 export interface TimePanelProps extends SlotProps {
   /** The date whose time is shown; its day is the one `min`/`max` are checked against. */
   value: Date | null;
+  /** The day `min`/`max` are checked against while there is no value. */
+  day?: Date | null | undefined;
   onChange: (time: TimeOfDay) => void;
   /** Default: the locale's clock. */
   hourCycle?: HourCycle | undefined;
@@ -43,27 +46,35 @@ export function TimePanel(props: TimePanelProps) {
   const labels = useLabels(props.labels);
   const slot = useSlots(props);
   const hourCycle = props.hourCycle ?? localeInfo.hourCycle;
-  const minuteStep = props.minuteStep ?? 5;
+  const minuteStep = props.minuteStep ?? DEFAULT_MINUTE_STEP;
   // Memoised so an odd step warns once, not on every render.
   const minuteOptions = useMemo(() => getMinuteOptions(minuteStep), [minuteStep]);
-  const digits = useMemo(() => new Intl.NumberFormat(locale, { minimumIntegerDigits: 2 }), [locale]);
+  const digits = useMemo(
+    () => new Intl.NumberFormat(locale, { minimumIntegerDigits: 2 }),
+    [locale],
+  );
 
   const hours = value?.getHours() ?? null;
   const minutes = value?.getMinutes() ?? null;
   const period: DayPeriod = hours !== null && hours >= 12 ? 'pm' : 'am';
 
-  // Without a value there is no day to check the limits against.
+  // Without a value or a day there is nothing to check the limits against.
+  const limitDay = value ?? props.day ?? null;
   const unavailable = (h: number, m: number) =>
-    value !== null && isTimeUnavailable(value, h, m, { min, max });
+    limitDay !== null && isTimeUnavailable(limitDay, h, m, { min, max });
   // Computed once per render and shared by the hour and AM/PM columns: hour 0–23 is
   // unavailable when none of its minute options is allowed.
-  const blockedHours = Array.from({ length: 24 }, (_, h) => minuteOptions.every((m) => unavailable(h, m)));
+  const blockedHours = Array.from({ length: 24 }, (_, h) =>
+    minuteOptions.every((m) => unavailable(h, m)),
+  );
   const hourUnavailable = (h: number) => blockedHours[h] === true;
   // A value off the minute step selects no option; focus starts on the nearest one instead.
   const nearestMinute =
     minutes === null
       ? null
-      : minuteOptions.reduce((best, m) => (Math.abs(m - minutes) < Math.abs(best - minutes) ? m : best));
+      : minuteOptions.reduce((best, m) =>
+          Math.abs(m - minutes) < Math.abs(best - minutes) ? m : best,
+        );
   const toHour24 = (hour: number) => (hourCycle === 12 ? to24h(hour, period) : hour);
 
   const hourColumn = getHourOptions(hourCycle).map((hour) =>
@@ -107,7 +118,10 @@ export function TimePanel(props: TimePanelProps) {
           options={periodColumn}
           selected={hours === null ? null : PERIODS.indexOf(period)}
           onSelect={(index) => {
-            onChange({ hours: ((hours ?? 0) % 12) + (index === 1 ? 12 : 0), minutes: minutes ?? 0 });
+            onChange({
+              hours: ((hours ?? 0) % 12) + (index === 1 ? 12 : 0),
+              minutes: minutes ?? 0,
+            });
           }}
           slot={slot}
         />

@@ -2,6 +2,9 @@ import { devWarn } from '../core/dev-warn';
 import { withTime } from '../date/date-math';
 import type { HourCycle } from '../i18n/locale-info';
 
+/** Minutes between time options when no `minuteStep` is given. */
+export const DEFAULT_MINUTE_STEP = 5;
+
 /** Hour options in display order: 12, 1–11 on a 12-hour clock; 0–23 on a 24-hour clock. */
 export function getHourOptions(hourCycle: HourCycle): number[] {
   if (hourCycle === 12) return [12, ...Array.from({ length: 11 }, (_, i) => i + 1)];
@@ -17,7 +20,9 @@ export function getMinuteOptions(step: number): number[] {
   if (!valid) {
     devWarn(`minuteStep must be a whole number from 1 to 60; got ${String(step)}. Using 1.`);
   } else if (60 % step !== 0) {
-    devWarn(`minuteStep ${String(step)} does not divide 60, so the minutes do not repeat evenly each hour.`);
+    devWarn(
+      `minuteStep ${String(step)} does not divide 60, so the minutes do not repeat evenly each hour.`,
+    );
   }
   const safeStep = valid ? step : 1;
   return Array.from({ length: Math.ceil(60 / safeStep) }, (_, i) => i * safeStep);
@@ -46,8 +51,34 @@ export function roundToStep(date: Date, step: number): Date {
     Math.abs(option - minute) <= Math.abs(best - minute) ? option : best,
   );
   const hours = date.getHours();
-  if (hours === 23 && nearest === 60) return withTime(date, { hours, minutes: Math.max(...options) });
+  if (hours === 23 && nearest === 60)
+    return withTime(date, { hours, minutes: Math.max(...options) });
   return withTime(date, { hours, minutes: nearest });
+}
+
+/**
+ * `date` moved onto the minute step without leaving its day or the limits: up to the next step,
+ * or down to the previous one when up would pass `max`. Kept as it is when already on the step
+ * or when no step fits, as when an off-step `min` and `max` are closer together than a step.
+ */
+export function snapToStepWithin(
+  date: Date,
+  step: number,
+  { min, max }: { min?: Date | undefined; max?: Date | undefined },
+): Date {
+  const onStep = date.getSeconds() === 0 && date.getMilliseconds() === 0;
+  const options = getMinuteOptions(step);
+  if (onStep && options.includes(date.getMinutes())) return date;
+
+  const sameDay = Array.from({ length: 24 }, (_, hours) =>
+    options.map((minutes) => withTime(date, { hours, minutes })),
+  ).flat();
+  const inLimits = (time: Date) => (!min || time >= min) && (!max || time <= max);
+  const up = sameDay.find((time) => time > date);
+  if (up && inLimits(up)) return up;
+  const earlier = sameDay.filter((time) => time < date);
+  const down = earlier[earlier.length - 1];
+  return down && inLimits(down) ? down : date;
 }
 
 /**
