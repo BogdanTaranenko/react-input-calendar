@@ -21,8 +21,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
-      - run: pnpm --filter e2e typecheck
       - run: pnpm build
+      # After the build: e2e resolves the library's types from its dist.
+      - run: pnpm --filter e2e typecheck
       - run: pnpm check:exports
       # Report-only: prints each entry's min+gzip size to the job log.
       - run: pnpm size

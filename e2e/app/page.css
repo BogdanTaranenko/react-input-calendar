@@ -24,6 +24,17 @@ body {
   align-items: flex-start;
 }
 
+/* Fixture buttons (not the library's): the page's own colours, since native button
+   styling in dark mode differs by engine (Linux WebKit: white on #c0c0c0). */
+.stack > button {
+  padding: 6px 12px;
+  border: 1px solid CanvasText;
+  border-radius: 6px;
+  background: Canvas;
+  color: CanvasText;
+  font: inherit;
+}
+
 /* Forced-dark fixtures sit on a dark panel whatever the page scheme is. */
 .dark-panel {
   padding: 16px;
