@@ -1,8 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { VERSION } from './index';
 
 describe('package entry', () => {
-  it('exports the placeholder version', () => {
-    expect(VERSION).toBe('0.0.0');
+  it('exports exactly the public runtime API', async () => {
+    expect(Object.keys(await import('./index')).sort()).toEqual([
+      'Calendar',
+      'CalendarConfigProvider',
+      'DatePicker',
+      'DateRangePicker',
+      'DateTimePicker',
+      'MultiDatePicker',
+      'defaultLabels',
+    ]);
   });
 });
