@@ -4,5 +4,5 @@
     "noEmit": true,
     "types": ["vite/client"]
   },
-  "include": ["app", "tests", "vite.config.ts", "playwright.config.ts"]
+  "include": ["app", "tests", "vite.config.ts", "playwright.config.ts", "playwright.compat.config.ts"]
 }

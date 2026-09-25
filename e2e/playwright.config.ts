@@ -1,7 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = 5179;
-const desktop = { testIgnore: /mobile\.spec/ };
+// The example apps have their own config: playwright.compat.config.ts.
+const desktop = { testIgnore: [/mobile\.spec/, /compat\//] };
 const mobile = { testMatch: /(mobile|a11y)\.spec/ };
 
 export default defineConfig({

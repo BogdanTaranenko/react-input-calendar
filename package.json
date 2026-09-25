@@ -16,6 +16,7 @@
     "size": "pnpm --filter @b.taranenko/react-input-calendar size",
     "check:exports": "pnpm --filter @b.taranenko/react-input-calendar check:exports",
     "e2e": "pnpm --filter e2e exec playwright test",
+    "compat": "node scripts/pack-and-install.mjs && npm --prefix examples/nextjs-app-router run build && npm --prefix examples/vite-react18 run build && pnpm --filter e2e exec playwright test -c playwright.compat.config.ts",
     "docs:dev": "pnpm --filter docs dev",
     "docs:build": "pnpm --filter docs build"
   },
