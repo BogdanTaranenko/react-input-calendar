@@ -1,0 +1,33 @@
+/* The fixture page itself, unlayered. It follows the colour scheme so axe judges the
+   library's contrast against a matching page background. */
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, sans-serif;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-size: 1.25rem;
+}
+
+body {
+  margin: 0;
+  padding: 24px;
+  background: Canvas;
+  color: CanvasText;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* Forced-dark fixtures sit on a dark panel whatever the page scheme is. */
+.dark-panel {
+  padding: 16px;
+  background: #16161a;
+  color: #f2f2f5;
+  color-scheme: dark;
+}

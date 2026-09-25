@@ -1,0 +1,3 @@
+@layer theme, base, ric, components, utilities;
+@import "tailwindcss";
+@import "@b.taranenko/react-input-calendar/styles.css";
