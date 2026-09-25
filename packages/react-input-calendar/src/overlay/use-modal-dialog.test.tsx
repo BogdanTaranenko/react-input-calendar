@@ -42,7 +42,8 @@ describe('useModalDialog — what counts as tabbable', () => {
       </button>
     ),
     'inert ancestor': (edge) => (
-      <div inert>
+      // A ref, not the `inert` prop: React 18 drops a boolean `inert`; React 19 renders it.
+      <div ref={(element) => element?.setAttribute('inert', '')}>
         <button type="button">{edge}</button>
       </div>
     ),
