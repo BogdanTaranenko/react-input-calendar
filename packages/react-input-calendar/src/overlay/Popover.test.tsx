@@ -78,11 +78,18 @@ function mockRect(element: Element, rect: Omit<Rect, 'right' | 'bottom'>) {
   });
 }
 
+/** jsdom lays nothing out, so `offsetWidth`/`offsetHeight` are 0 unless given. */
+function mockSize(element: HTMLElement, size: { width: number; height: number }) {
+  vi.spyOn(element, 'offsetWidth', 'get').mockReturnValue(size.width);
+  vi.spyOn(element, 'offsetHeight', 'get').mockReturnValue(size.height);
+}
+
 /** Gives the trigger and the dialog real-looking boxes as soon as the dialog appears. */
 function mockLayout(anchor: Omit<Rect, 'right' | 'bottom'>) {
   vi.spyOn(HTMLDialogElement.prototype, 'showModal').mockImplementation(function (this: HTMLDialogElement) {
     mockRect(trigger(), anchor);
     mockRect(this, { left: 0, top: 0, width: 300, height: 350 });
+    mockSize(this, { width: 300, height: 350 });
     this.setAttribute('open', '');
   });
 }
@@ -358,6 +365,21 @@ describe('Popover — position', () => {
     expect(dialog().style.left).toBe('300px');
     expect(dialog().style.top).toBe('242px');
     expect(dialog()).toHaveAttribute('data-placement', 'top-start');
+  });
+
+  it('sizes itself by layout, not by the scaled box of its open animation', async () => {
+    vi.spyOn(HTMLDialogElement.prototype, 'showModal').mockImplementation(function (this: HTMLDialogElement) {
+      mockRect(trigger(), { left: 400, top: 600, width: 200, height: 40 });
+      // Mid scale-in (0.96): the transformed box is smaller than the laid-out 300×350.
+      mockRect(this, { left: 6, top: 7, width: 288, height: 336 });
+      mockSize(this, { width: 300, height: 350 });
+      this.setAttribute('open', '');
+    });
+    const user = userEvent.setup();
+    render(<Harness placement="bottom-start" dir="rtl" />);
+    await user.click(trigger());
+    expect(dialog().style.left).toBe('300px');
+    expect(dialog().style.top).toBe('242px');
   });
 
   it('repositions on scroll and resize in the next frame, and stops after closing', async () => {

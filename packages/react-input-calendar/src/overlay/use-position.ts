@@ -37,7 +37,9 @@ export function usePosition(
     const update = () => {
       const position = computePosition({
         anchor: anchor.getBoundingClientRect(),
-        floating: floating.getBoundingClientRect(),
+        // Layout size, rounded to whole pixels: the bounding box shrinks with the open
+        // animation's scale transform.
+        floating: { width: floating.offsetWidth, height: floating.offsetHeight },
         viewport: getViewport(),
         placement,
         dir,
