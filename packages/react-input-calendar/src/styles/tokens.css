@@ -19,11 +19,11 @@
     --ric-text: oklch(0.21 0.02 265);
     --ric-text-muted: oklch(0.55 0.02 265);
     --ric-border: oklch(0.9 0.01 265);
-    --ric-hover: color-mix(in oklab, var(--ric-accent) 10%, transparent);
-    --ric-range-bg: color-mix(in oklab, var(--ric-accent) 16%, transparent);
-    --ric-preview-border: color-mix(in oklab, var(--ric-accent) 60%, transparent);
-    --ric-today-ring: var(--ric-accent);
-    --ric-focus-ring: 0 0 0 2px var(--ric-surface), 0 0 0 4px var(--ric-accent);
+    /* How much accent the hover, range and preview colours mix in; see the .ric-root rule. */
+    --_ric-hover-mix: 10%;
+    --_ric-range-mix: 16%;
+    --_ric-preview-mix: 60%;
+    --_ric-preview-base: transparent;
     --ric-danger: oklch(0.58 0.21 25);
     --ric-backdrop: rgb(0 0 0 / 0.4);
 
@@ -51,9 +51,10 @@
       --ric-text: oklch(0.96 0.005 265);
       --ric-text-muted: oklch(0.72 0.015 265);
       --ric-border: oklch(0.36 0.015 265);
-      --ric-hover: color-mix(in oklab, var(--ric-accent) 22%, transparent);
-      --ric-range-bg: color-mix(in oklab, var(--ric-accent) 30%, transparent);
-      --ric-preview-border: color-mix(in oklab, var(--ric-accent) 80%, white);
+      --_ric-hover-mix: 22%;
+      --_ric-range-mix: 30%;
+      --_ric-preview-mix: 80%;
+      --_ric-preview-base: white;
       --ric-danger: oklch(0.7 0.19 25);
       --ric-backdrop: rgb(0 0 0 / 0.6);
       --ric-shadow: 0 10px 38px -10px rgb(0 0 0 / 0.7), 0 10px 20px -15px rgb(0 0 0 / 0.5);
@@ -68,17 +69,42 @@
     --ric-text: oklch(0.96 0.005 265);
     --ric-text-muted: oklch(0.72 0.015 265);
     --ric-border: oklch(0.36 0.015 265);
-    --ric-hover: color-mix(in oklab, var(--ric-accent) 22%, transparent);
-    --ric-range-bg: color-mix(in oklab, var(--ric-accent) 30%, transparent);
-    --ric-preview-border: color-mix(in oklab, var(--ric-accent) 80%, white);
+    --_ric-hover-mix: 22%;
+    --_ric-range-mix: 30%;
+    --_ric-preview-mix: 80%;
+    --_ric-preview-base: white;
     --ric-danger: oklch(0.7 0.19 25);
     --ric-backdrop: rgb(0 0 0 / 0.6);
     --ric-shadow: 0 10px 38px -10px rgb(0 0 0 / 0.7), 0 10px 20px -15px rgb(0 0 0 / 0.5);
   }
 
-  /* Base shared by the field wrapper and every popup surface. */
+  /*
+   * Base shared by the field wrapper and every popup surface.
+   *
+   * Colours built from other tokens are resolved here, not on :root: a custom property
+   * resolves its var() where it is declared, so on :root they would ignore an --ric-accent
+   * set on a wrapper or a picker. Each public token stays optional and wins when set.
+   */
   .ric-root,
   .ric-surface {
+    --_ric-hover: var(
+      --ric-hover,
+      color-mix(in oklab, var(--ric-accent) var(--_ric-hover-mix), transparent)
+    );
+    --_ric-range-bg: var(
+      --ric-range-bg,
+      color-mix(in oklab, var(--ric-accent) var(--_ric-range-mix), transparent)
+    );
+    --_ric-preview-border: var(
+      --ric-preview-border,
+      color-mix(in oklab, var(--ric-accent) var(--_ric-preview-mix), var(--_ric-preview-base))
+    );
+    --_ric-today-ring: var(--ric-today-ring, var(--ric-accent));
+    --_ric-focus-ring: var(
+      --ric-focus-ring,
+      0 0 0 2px var(--ric-surface),
+      0 0 0 4px var(--ric-accent)
+    );
     color-scheme: var(--ric-color-scheme);
     font-family: var(--ric-font);
     font-size: var(--ric-font-size);
@@ -131,6 +157,6 @@
     ):focus-visible {
     outline: 2px solid transparent;
     outline-offset: 2px;
-    box-shadow: var(--ric-focus-ring);
+    box-shadow: var(--_ric-focus-ring);
   }
 }

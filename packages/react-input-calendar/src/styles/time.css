@@ -51,12 +51,12 @@
   }
 
   .ric-time-option:hover {
-    background: var(--ric-hover);
+    background: var(--_ric-hover);
   }
 
   /* Covers both focus models: roving tabindex on options, or the column holding focus. */
   .ric-time-column:focus-visible .ric-time-option[data-focused] {
-    box-shadow: var(--ric-focus-ring);
+    box-shadow: var(--_ric-focus-ring);
   }
 
   .ric-time-option[data-disabled] {

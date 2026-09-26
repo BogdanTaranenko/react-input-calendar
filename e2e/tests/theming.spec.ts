@@ -73,6 +73,22 @@ test.describe('forced schemes and ancestor tokens', () => {
     await trigger(page).click();
     await expect(selectedDay(page)).toHaveCSS('background-color', 'rgb(204, 0, 0)');
   });
+
+  test('an ancestor --ric-accent also drives the colours mixed from it', async ({ page }) => {
+    await openFixture(page, 'accent-ancestor');
+    await trigger(page).click();
+    const hovered = day(page, 'September 10, 2026');
+    await hovered.hover();
+    const expected = await hovered.evaluate((el) => {
+      const probe = document.createElement('span');
+      probe.style.background = 'color-mix(in oklab, rgb(204 0 0) 10%, transparent)';
+      el.append(probe);
+      const colour = getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return colour;
+    });
+    await expect(hovered).toHaveCSS('background-color', expected);
+  });
 });
 
 test.describe('motion and layers', () => {

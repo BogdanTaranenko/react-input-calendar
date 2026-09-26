@@ -100,6 +100,16 @@ describe('library stylesheets', () => {
     }
   });
 
+  // A custom property resolves its var() where it is declared. Declared on :root, a token built
+  // from --ric-accent would keep the root accent under a wrapper that sets its own.
+  it('declares no default token built from another --ric-* token', () => {
+    const source = read('tokens.css').replace(/\/\*[\s\S]*?\*\//g, '');
+    const derived = [...source.matchAll(/(--ric-[a-z0-9-]+)\s*:\s*([^;]+);/g)]
+      .filter((match) => match[2]?.includes('var(--ric-'))
+      .map((match) => match[1]);
+    expect([...new Set(derived)]).toEqual([]);
+  });
+
   // Without these the browser claims the gesture (pointercancel) before useSwipe sees it.
   it('leaves horizontal swipes on the sheet grid and every drag on the handle to script', () => {
     const css = read('overlay.css');

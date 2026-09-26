@@ -61,7 +61,7 @@
 
   .ric-caption:hover,
   .ric-nav-button:hover {
-    background: var(--ric-hover);
+    background: var(--_ric-hover);
     color: var(--ric-text);
   }
 
@@ -132,7 +132,7 @@
   }
 
   .ric-day-button:hover {
-    background: var(--ric-hover);
+    background: var(--_ric-hover);
   }
 
   .ric-day[data-outside] > .ric-day-button {
@@ -140,12 +140,12 @@
   }
 
   .ric-day[data-today] > .ric-day-button {
-    box-shadow: inset 0 0 0 1px var(--ric-today-ring);
+    box-shadow: inset 0 0 0 1px var(--_ric-today-ring);
     font-weight: 600;
   }
 
   .ric-day[data-today] > .ric-day-button:focus-visible {
-    box-shadow: var(--ric-focus-ring);
+    box-shadow: var(--_ric-focus-ring);
   }
 
   .ric-day[data-disabled] > .ric-day-button {
@@ -172,7 +172,7 @@
     position: absolute;
     inset-block: calc(var(--ric-gap) / 2);
     inset-inline: 0;
-    background: var(--ric-range-bg);
+    background: var(--_ric-range-bg);
   }
 
   .ric-day:is([data-range-start], [data-range-end])::before {
@@ -206,25 +206,25 @@
     position: absolute;
     inset-block: calc(var(--ric-gap) / 2);
     inset-inline: 0;
-    border-block: 1px dashed var(--ric-preview-border);
+    border-block: 1px dashed var(--_ric-preview-border);
   }
 
   .ric-day[data-preview]:first-child::before,
   .ric-day:not([data-preview]) + .ric-day[data-preview]::before {
-    border-inline-start: 1px dashed var(--ric-preview-border);
+    border-inline-start: 1px dashed var(--_ric-preview-border);
     border-start-start-radius: var(--ric-radius-cell);
     border-end-start-radius: var(--ric-radius-cell);
   }
 
   .ric-day[data-preview]:last-child::before {
-    border-inline-end: 1px dashed var(--ric-preview-border);
+    border-inline-end: 1px dashed var(--_ric-preview-border);
     border-start-end-radius: var(--ric-radius-cell);
     border-end-end-radius: var(--ric-radius-cell);
   }
 
   /* Kept separate: browsers without :has() drop only this rule (the end stays square). */
   .ric-day[data-preview]:has(+ .ric-day:not([data-preview]))::before {
-    border-inline-end: 1px dashed var(--ric-preview-border);
+    border-inline-end: 1px dashed var(--_ric-preview-border);
     border-start-end-radius: var(--ric-radius-cell);
     border-end-end-radius: var(--ric-radius-cell);
   }
@@ -253,18 +253,18 @@
 
   .ric-month-button:hover,
   .ric-year-button:hover {
-    background: var(--ric-hover);
+    background: var(--_ric-hover);
   }
 
   .ric-month-button[data-current],
   .ric-year-button[data-current] {
-    box-shadow: inset 0 0 0 1px var(--ric-today-ring);
+    box-shadow: inset 0 0 0 1px var(--_ric-today-ring);
     font-weight: 600;
   }
 
   .ric-month-button[data-current]:focus-visible,
   .ric-year-button[data-current]:focus-visible {
-    box-shadow: var(--ric-focus-ring);
+    box-shadow: var(--_ric-focus-ring);
   }
 
   .ric-month-button[data-disabled],
@@ -300,11 +300,11 @@
   }
 
   .ric-preset:hover {
-    background: var(--ric-hover);
+    background: var(--_ric-hover);
   }
 
   .ric-preset[data-active] {
-    background: var(--ric-range-bg);
+    background: var(--_ric-range-bg);
     font-weight: 600;
   }
 
