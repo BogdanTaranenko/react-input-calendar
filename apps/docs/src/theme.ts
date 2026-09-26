@@ -52,3 +52,24 @@ const subscribe = (listener: () => void) => {
 export function useTheme(): Theme {
   return useSyncExternalStore(subscribe, () => current);
 }
+
+const DARK_QUERY = '(prefers-color-scheme: dark)';
+
+const subscribeToSystem = (listener: () => void) => {
+  const query = window.matchMedia(DARK_QUERY);
+  query.addEventListener('change', listener);
+  return () => {
+    query.removeEventListener('change', listener);
+  };
+};
+
+/** The scheme the page is showing right now: the choice, or the system's when it is `system`. */
+export function useResolvedScheme(): 'light' | 'dark' {
+  const theme = useTheme();
+  const systemDark = useSyncExternalStore(
+    subscribeToSystem,
+    () => window.matchMedia(DARK_QUERY).matches,
+  );
+  if (theme !== 'system') return theme;
+  return systemDark ? 'dark' : 'light';
+}

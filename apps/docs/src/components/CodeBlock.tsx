@@ -25,9 +25,10 @@ function getHighlighter(): Promise<HighlighterCore> {
 interface CodeBlockProps {
   code: string;
   lang?: CodeLanguage;
+  copyLabel?: string;
 }
 
-export function CodeBlock({ code, lang = 'tsx' }: CodeBlockProps) {
+export function CodeBlock({ code, lang = 'tsx', copyLabel = 'Copy' }: CodeBlockProps) {
   const source = code.trimEnd();
   const [html, setHtml] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -71,7 +72,7 @@ export function CodeBlock({ code, lang = 'tsx' }: CodeBlockProps) {
   return (
     <div className="code-block">
       <button type="button" className="copy-button" onClick={copy}>
-        {copied ? 'Copied' : 'Copy'}
+        {copied ? 'Copied' : copyLabel}
       </button>
       {html === null ? (
         <pre>

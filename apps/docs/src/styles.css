@@ -587,6 +587,219 @@ main:focus {
   opacity: 0.7;
 }
 
+/* ---------- Guides ---------- */
+
+.prose-list {
+  padding-inline-start: 20px;
+}
+
+.prose-list li + li {
+  margin-top: 6px;
+}
+
+.callout {
+  padding: 12px 16px;
+  border-inline-start: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--accent-soft);
+}
+
+.segmented,
+.slot-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 16px;
+}
+
+.segmented button,
+.slot-list button {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.slot-list button {
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.segmented button[aria-pressed='true'],
+.slot-list button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.slot-diagram {
+  --highlight: oklch(0.65 0.25 20);
+  margin: 0 0 24px;
+}
+
+.slot-detail {
+  color: var(--text-muted);
+}
+
+.slot-demo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px;
+  border-radius: var(--radius);
+  border-bottom: 1px solid var(--border);
+}
+
+.locale-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin: 0 0 16px;
+}
+
+.locale-facts dt {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.locale-facts dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.locale-switcher .example-preview {
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* ---------- Theme customiser ---------- */
+
+.customizer {
+  display: grid;
+  grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  gap: 20px;
+  margin: 0 0 32px;
+}
+
+.customizer-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.control-group {
+  margin: 0;
+  padding: 12px 14px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.control-group legend {
+  padding: 0 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.control {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 14px;
+}
+
+.control + .control {
+  margin-top: 10px;
+}
+
+.control input[type='range'],
+.control select {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.control select {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.control output,
+.control-color code {
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.control-color {
+  grid-template-columns: 1fr auto auto;
+}
+
+.control-color input {
+  width: 32px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.control-color code {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+
+.control-check {
+  grid-template-columns: auto 1fr;
+  justify-content: start;
+}
+
+.customizer-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.customizer-scheme {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.customizer-output {
+  grid-column: 1 / -1;
+}
+
+.customizer-output .code-block {
+  margin: 0;
+}
+
 /* ---------- Narrow screens ---------- */
 
 @media (max-width: 860px) {
@@ -640,6 +853,10 @@ main:focus {
   .hero-demo {
     grid-template-columns: minmax(0, 1fr);
     padding: 20px 16px;
+  }
+
+  .customizer {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .page-header h1 {

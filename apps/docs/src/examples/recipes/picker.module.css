@@ -1,0 +1,15 @@
+/* Unlayered, so these beat the library's @layer ric with plain class selectors. */
+.trigger {
+  border-radius: 999px;
+  border-width: 2px;
+}
+
+.popover {
+  --ric-accent: #7c3aed;
+  --ric-radius: 20px;
+}
+
+/* The state attribute is on the cell (the `day` slot); the button is inside it. */
+.cell[data-weekend] > .button {
+  color: #7c3aed;
+}

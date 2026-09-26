@@ -24,6 +24,8 @@ jobs:
       - run: pnpm build
       # After the build: e2e resolves the library's types from its dist.
       - run: pnpm --filter e2e typecheck
+      # Every public prop, token and data attribute must have a docs row.
+      - run: pnpm --filter docs test
       - run: pnpm check:exports
       # Report-only: prints each entry's min+gzip size to the job log.
       - run: pnpm size
