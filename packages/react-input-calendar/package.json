@@ -1,7 +1,27 @@
 {
   "name": "@b.taranenko/react-input-calendar",
   "version": "0.0.0",
+  "description": "Accessible, themeable React date pickers with zero runtime dependencies: single date, range, multiple dates, date + time and an inline calendar.",
+  "keywords": [
+    "react",
+    "datepicker",
+    "date-picker",
+    "calendar",
+    "date-range",
+    "datetime",
+    "accessible",
+    "zero-dependency",
+    "themeable"
+  ],
+  "author": "Bogdan Taranenko",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BogdanTaranenko/react-input-calendar.git",
+    "directory": "packages/react-input-calendar"
+  },
+  "homepage": "https://bogdantaranenko.github.io/react-input-calendar/",
+  "bugs": "https://github.com/BogdanTaranenko/react-input-calendar/issues",
   "type": "module",
   "sideEffects": [
     "**/*.css"
@@ -33,6 +53,7 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
+    "prepack": "cp ../../README.md ../../LICENSE .",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
