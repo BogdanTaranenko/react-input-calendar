@@ -14,3 +14,5 @@ packages/react-input-calendar/LICENSE
 .DS_Store
 .idea/
 plans/
+.env
+.env.*
