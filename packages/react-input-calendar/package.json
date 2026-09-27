@@ -1,6 +1,6 @@
 {
   "name": "@b.taranenko/react-input-calendar",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Accessible, themeable React date pickers with zero runtime dependencies: single date, range, multiple dates, date + time and an inline calendar.",
   "keywords": [
     "react",
